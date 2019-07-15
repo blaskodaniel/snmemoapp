@@ -75,13 +75,13 @@ export const MemoPanel: React.FunctionComponent = () => {
   }
 
   // Edit/Read mode handler
-  const handleEditmode: any = (panel: string, content: string) => (
-    /* event: React.ChangeEvent<{}>, */ isEditmode: boolean,
-  ) => {
-    setEditmode(panel)
-    setEditText(content)
-    console.log(editmode)
-  }
+  const handleEditmode: any = (panel: string, content: string) => () =>
+    /* event: React.ChangeEvent<{}>, */
+    /* isEditmode: boolean */ {
+      setEditmode(panel)
+      setEditText(content)
+      console.log(editmode)
+    }
 
   // Form submit handler
   const handleSubmit: any = (event: React.ChangeEvent<HTMLFormElement>) => {
