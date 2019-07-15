@@ -69,19 +69,17 @@ export const MemoPanel: React.FunctionComponent = () => {
   }, [repo])
 
   // Expansion panel handler
-  const handleChangeExpand: any = (panel: string) => (/* event: React.ChangeEvent<{}>,  */ isExpanded: boolean) => {
+  const handleChangeExpand: any = (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
     console.log(expanded)
   }
 
   // Edit/Read mode handler
-  const handleEditmode: any = (panel: string, content: string) => () =>
-    /* event: React.ChangeEvent<{}>, */
-    /* isEditmode: boolean */ {
-      setEditmode(panel)
-      setEditText(content)
-      console.log(editmode)
-    }
+  const handleEditmode: any = (panel: string, content: string) => () => {
+    setEditmode(panel)
+    setEditText(content)
+    console.log(editmode)
+  }
 
   // Form submit handler
   const handleSubmit: any = (event: React.ChangeEvent<HTMLFormElement>) => {
