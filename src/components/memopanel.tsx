@@ -4,6 +4,8 @@ import moment from 'moment'
 import Fab from '@material-ui/core/Fab'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import SaveIcon from '@material-ui/icons/Save'
+import RedoIcon from '@material-ui/icons/Redo'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
@@ -20,6 +22,9 @@ const useStyles: any = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+    },
+    hidden: {
+      display: 'none',
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),
@@ -43,7 +48,8 @@ export const MemoPanel: React.FunctionComponent = () => {
   const repo: any = useRepository()
   const classes: any = useStyles()
   const [expanded, setExpanded] = useState<string | false>(false)
-  const [editmode, setEditmode] = useState<string | false>(false)
+  const [editmode, setEditmode] = useState<string | false>('')
+  const [editText, setEditText] = useState<string | false>('')
   const [data, setData] = useState<GenericContent[]>([])
 
   useEffect(() => {
@@ -62,21 +68,30 @@ export const MemoPanel: React.FunctionComponent = () => {
     loadMemos()
   }, [repo])
 
+  // Expansion panel handler
   const handleChangeExpand: any = (panel: string) => (/* event: React.ChangeEvent<{}>,  */ isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
+    console.log(expanded)
   }
 
-  const handleEditmode: any = (panel: string) => (/* event: React.ChangeEvent<{}>, */ isEditmode: boolean) => {
+  // Edit/Read mode handler
+  const handleEditmode: any = (panel: string, content: string) => (
+    /* event: React.ChangeEvent<{}>, */ isEditmode: boolean,
+  ) => {
+    setEditmode(panel)
+    setEditText(content)
     console.log(editmode)
-    setEditmode(isEditmode ? panel : false)
   }
 
+  // Form submit handler
   const handleSubmit: any = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log(event.currentTarget.value)
   }
 
+  // Text change handler in edit mode
   const handleChange: any = (panel: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditText(event.target.value)
     console.log(`${panel}-${event.target.value}`)
   }
 
@@ -98,26 +113,48 @@ export const MemoPanel: React.FunctionComponent = () => {
           <ExpansionPanelDetails>
             <Grid container>
               <Grid item xs={12}>
-                <ReactMarkdown source={memo.Description} />
+                <ReactMarkdown
+                  source={memo.Description}
+                  className={editmode === memo.Id.toString() ? classes.hidden : ''}
+                />
                 <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                   <TextField
-                    style={{ width: '100%' }}
-                    placeholder="Please write a memo..."
+                    style={{ width: '100%', display: editmode === memo.Id.toString() ? 'block' : 'none' }}
+                    placeholder="Write a memo..."
                     multiline={true}
-                    value={memo.Description}
+                    value={editText}
                     onChange={handleChange(memo.Id.toString())}
-                    rows={2}
+                    rows={1}
                     rowsMax={10}
                     id={memo.Id.toString()}
                   />
                 </form>
               </Grid>
               <Grid item xs={12} style={{ textAlign: 'right' }}>
-                <Fab color="secondary" aria-label="Edit" size={'small'} className={classes.fab}>
-                  <EditIcon onClick={handleEditmode(memo.Id.toString())} />
+                <Fab
+                  color="secondary"
+                  aria-label="Edit"
+                  size={'small'}
+                  className={editmode === memo.Id.toString() ? classes.hidden : classes.fab}>
+                  <EditIcon onClick={handleEditmode(memo.Id.toString(), memo.Description)} />
                 </Fab>
-                <Fab aria-label="Delete" size={'small'} className={classes.fab}>
+                <Fab
+                  aria-label="Delete"
+                  size={'small'}
+                  className={editmode === memo.Id.toString() ? classes.hidden : classes.fab}>
                   <DeleteIcon />
+                </Fab>
+                <Fab
+                  aria-label="Save"
+                  size={'small'}
+                  className={editmode === memo.Id.toString() ? classes.fab : classes.hidden}>
+                  <SaveIcon />
+                </Fab>
+                <Fab
+                  aria-label="Cancel"
+                  size={'small'}
+                  className={editmode === memo.Id.toString() ? classes.fab : classes.hidden}>
+                  <RedoIcon />
                 </Fab>
               </Grid>
             </Grid>
