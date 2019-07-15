@@ -1,8 +1,7 @@
 import React from 'react'
 import { Container, CssBaseline, Grid } from '@material-ui/core'
 import snLogo from './assets/sensenet_logo_transparent.png'
-import { useCurrentUser } from './hooks/use-current-user'
-import { useRepository } from './hooks/use-repository'
+// import { useCurrentUser } from "./hooks/use-current-user"
 import { NavBarComponent } from './components/navbar'
 import { MemoPanel } from './components/memopanel'
 
@@ -10,8 +9,7 @@ import { MemoPanel } from './components/memopanel'
  * The main entry point of your app. You can start h@cking from here ;)
  */
 export const App: React.FunctionComponent = () => {
-  const usr = useCurrentUser()
-  const repo = useRepository()
+  // const usr = useCurrentUser()
   return (
     <>
       <NavBarComponent />
