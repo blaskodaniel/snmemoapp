@@ -68,6 +68,16 @@ export const MemoPanel: React.FunctionComponent = () => {
     loadMemos()
   }, [repo])
 
+  // Remove memo
+  const deleteMemo = async (path: string, allmemo: GenericContent[], memo: GenericContent) => {
+    const newdata = allmemo.filter(x => x.Id != memo.Id)
+    await repo.delete({
+      idOrPath: path,
+      permanent: true,
+    })
+    setData(newdata)
+  }
+
   // Expansion panel handler
   const handleChangeExpand: any = (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
@@ -139,6 +149,7 @@ export const MemoPanel: React.FunctionComponent = () => {
                 <Fab
                   aria-label="Delete"
                   size={'small'}
+                  onClick={() => deleteMemo(memo.Path, data, memo)}
                   className={editmode === memo.Id.toString() ? classes.hidden : classes.fab}>
                   <DeleteIcon />
                 </Fab>
