@@ -14,3 +14,9 @@ export interface ReduxMemostateI {
   type: string
   value: string
 }
+
+export interface DialogPropsI {
+  open: boolean
+  title: string
+  onClose: (value: boolean) => void
+}

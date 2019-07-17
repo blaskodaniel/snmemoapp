@@ -17,6 +17,7 @@ import { Grid } from '@material-ui/core'
 import { ConstantContent, ODataCollectionResponse } from '@sensenet/client-core'
 import { GenericContent, User } from '@sensenet/default-content-types'
 import { useRepository } from '../hooks/use-repository'
+import { DialogComponent } from '../components/dialog'
 
 const useStyles: any = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,7 +50,10 @@ export const MemoPanel: React.FunctionComponent = () => {
   const classes: any = useStyles()
   const [expanded, setExpanded] = useState<string | false>(false)
   const [editmode, setEditmode] = useState<string | false>('')
-  const [editText, setEditText] = useState<string | false>('')
+  const [editText, setEditText] = useState<string>('')
+  const [openmodal, setOpenmodal] = useState<boolean>(false)
+  const [modaltitle, setModaltitle] = useState<string>('')
+  const [currentmemo, setCurrentmemo] = useState<GenericContent>(null as any)
   const [data, setData] = useState<GenericContent[]>([])
 
   useEffect(() => {
@@ -68,14 +72,29 @@ export const MemoPanel: React.FunctionComponent = () => {
     loadMemos()
   }, [repo])
 
-  // Remove memo
-  const deleteMemo = async (path: string, allmemo: GenericContent[], memo: GenericContent) => {
-    const newdata = allmemo.filter(x => x.Id != memo.Id)
-    await repo.delete({
-      idOrPath: path,
-      permanent: true,
-    })
-    setData(newdata)
+  // Remove memo - open modal
+  const deleteOpenModal = (memo: GenericContent) => {
+    setCurrentmemo(memo) // set current content for removing
+    const title = memo.DisplayName ? memo.DisplayName : ''
+    setModaltitle(title)
+    setOpenmodal(true)
+  }
+
+  // Remove memo - remove content
+  const deleteMemoContent = async (receivebtn: boolean) => {
+    if (receivebtn) {
+      // User clicked "Yes"
+      const newdata = data.filter(x => x.Id != currentmemo.Id)
+      await repo.delete({
+        idOrPath: currentmemo.Path,
+        permanent: true,
+      })
+      setData(newdata) // refresh memo list
+      setOpenmodal(false) // close modal window
+    } else {
+      // User clicked "No"
+      setOpenmodal(false)
+    }
   }
 
   // Expansion panel handler
@@ -85,22 +104,34 @@ export const MemoPanel: React.FunctionComponent = () => {
   }
 
   // Edit/Read mode handler
-  const handleEditmode: any = (panel: string, content: string) => () => {
-    setEditmode(panel)
-    setEditText(content)
+  const handleEditmode: any = (memo: GenericContent) => () => {
+    setEditmode(memo.Id.toString())
+    setEditText(memo.Description ? memo.Description : '')
     console.log(editmode)
   }
 
-  // Form submit handler
-  const handleSubmit: any = (event: React.ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log(event.currentTarget.value)
+  // Save handler
+  const handleSave: any = async (memo: GenericContent) => {
+    const newDescrition = {
+      Description: editText,
+    }
+    await repo.patch({
+      idOrPath: memo.Id,
+      content: newDescrition,
+    })
+    data.map(x => {
+      if (x.Id === memo.Id) {
+        x.Description = editText
+      }
+    })
+    setData(data)
+    setEditmode(false)
+    console.log('Save successfuly')
   }
 
   // Text change handler in edit mode
-  const handleChange: any = (panel: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange: any = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditText(event.target.value)
-    console.log(`${panel}-${event.target.value}`)
   }
 
   return (
@@ -114,8 +145,7 @@ export const MemoPanel: React.FunctionComponent = () => {
             <Typography className={classes.heading}>{memo.DisplayName}</Typography>
             <Typography className={classes.secondaryHeading}>
               {memo.CreatedBy ? (memo.CreatedBy as User).FullName : ''} -{' '}
-              {moment(new Date(memo.CreationDate ? memo.CreationDate : '')).format('YYYY-MM-DD HH:mm:ss')} -{' '}
-              {moment(new Date(memo.ModificationDate ? memo.ModificationDate : '')).format('YYYY-MM-DD HH:mm:ss')}
+              {moment(new Date(memo.CreationDate ? memo.CreationDate : '')).format('YYYY-MM-DD HH:mm:ss')}
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -125,18 +155,16 @@ export const MemoPanel: React.FunctionComponent = () => {
                   source={memo.Description}
                   className={editmode === memo.Id.toString() ? classes.hidden : ''}
                 />
-                <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                  <TextField
-                    style={{ width: '100%', display: editmode === memo.Id.toString() ? 'block' : 'none' }}
-                    placeholder="Write a memo..."
-                    multiline={true}
-                    value={editText}
-                    onChange={handleChange(memo.Id.toString())}
-                    rows={1}
-                    rowsMax={10}
-                    id={memo.Id.toString()}
-                  />
-                </form>
+                <TextField
+                  style={{ width: '100%', display: editmode === memo.Id.toString() ? 'block' : 'none' }}
+                  placeholder="Write a memo..."
+                  multiline={true}
+                  value={editText}
+                  onChange={handleChange(memo.Id.toString())}
+                  rows={1}
+                  rowsMax={10}
+                  id={memo.Id.toString()}
+                />
               </Grid>
               <Grid item xs={12} style={{ textAlign: 'right' }}>
                 <Fab
@@ -144,24 +172,28 @@ export const MemoPanel: React.FunctionComponent = () => {
                   aria-label="Edit"
                   size={'small'}
                   className={editmode === memo.Id.toString() ? classes.hidden : classes.fab}>
-                  <EditIcon onClick={handleEditmode(memo.Id.toString(), memo.Description)} />
+                  <EditIcon onClick={handleEditmode(memo)} />
                 </Fab>
                 <Fab
                   aria-label="Delete"
                   size={'small'}
-                  onClick={() => deleteMemo(memo.Path, data, memo)}
+                  onClick={() => deleteOpenModal(memo)}
                   className={editmode === memo.Id.toString() ? classes.hidden : classes.fab}>
                   <DeleteIcon />
                 </Fab>
                 <Fab
                   aria-label="Save"
                   size={'small'}
+                  onClick={() => handleSave(memo)}
                   className={editmode === memo.Id.toString() ? classes.fab : classes.hidden}>
                   <SaveIcon />
                 </Fab>
                 <Fab
                   aria-label="Cancel"
                   size={'small'}
+                  onClick={() => {
+                    setEditmode(false)
+                  }}
                   className={editmode === memo.Id.toString() ? classes.fab : classes.hidden}>
                   <RedoIcon />
                 </Fab>
@@ -170,6 +202,13 @@ export const MemoPanel: React.FunctionComponent = () => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}
+      <DialogComponent
+        open={openmodal}
+        title={modaltitle}
+        onClose={receivebtn => {
+          deleteMemoContent(receivebtn)
+        }}
+      />
     </div>
   )
 }
