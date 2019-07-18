@@ -129,14 +129,12 @@ export const MemoPanel: React.FunctionComponent = () => {
   // Expansion panel handler
   const handleChangeExpand: any = (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
-    console.log(expanded)
   }
 
   // Edit/Read mode handler
   const handleEditmode: any = (memo: GenericContent) => () => {
     setEditmode(memo.Id.toString())
     setEditText(memo.Description ? memo.Description : '')
-    console.log(editmode)
   }
 
   // Save handler
@@ -169,7 +167,6 @@ export const MemoPanel: React.FunctionComponent = () => {
 
     setData(newlist)
     setEditmode(false)
-    console.log('Save successfuly')
   }
 
   // Text change handler in edit mode
@@ -255,7 +252,10 @@ export const MemoPanel: React.FunctionComponent = () => {
       <Fab
         color="secondary"
         variant="extended"
-        onClick={() => setAddpanelshow(true)}
+        onClick={() => {
+          setAddpanelshow(true)
+          window.scrollTo(0, 0)
+        }}
         aria-label="Add new"
         className={classes.fabAdd}>
         <AddIcon className={classes.extendedIcon} />
