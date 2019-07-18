@@ -53,7 +53,7 @@ export const App: React.FunctionComponent = (props: Props) => {
         maxWidth="lg"
         style={{
           width: '100%',
-          minHeight: '100vh',
+          minHeight: '90vh',
           marginTop: '10px',
           display: 'flex',
           verticalAlign: 'middle',
