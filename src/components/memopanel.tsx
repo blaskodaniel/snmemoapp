@@ -43,7 +43,7 @@ const useStyles: any = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     fabAdd: {
-      position: 'absolute',
+      position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(2),
     },
@@ -75,16 +75,10 @@ export const MemoPanel: React.FunctionComponent = () => {
           expand: ['CreatedBy'] as string[],
         },
       })
-
       setData(result.d.results)
     }
     loadMemos()
   }, [repo])
-
-  useEffect(() => {
-    console.log('SET')
-    //setData(data)
-  }, [data])
 
   // Remove memo - open modal
   const deleteOpenModal = (memo: GenericContent) => {
