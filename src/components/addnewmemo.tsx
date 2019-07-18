@@ -39,7 +39,7 @@ export const AddNew: React.FunctionComponent<AddNewI> = props => {
 
   return (
     <Paper className={classes.paper} style={{ display: props.show ? 'block' : 'none' }}>
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h5" component="h3">
             Add new memo to list
@@ -48,8 +48,9 @@ export const AddNew: React.FunctionComponent<AddNewI> = props => {
         <Grid item xs={12} md={6}>
           <TextField
             style={{ width: '100%' }}
-            placeholder="Memo title"
+            required
             multiline={true}
+            label="Memo title"
             value={displayname}
             onChange={ev => setDisplayname(ev.target.value)}
             rows={1}
@@ -60,8 +61,9 @@ export const AddNew: React.FunctionComponent<AddNewI> = props => {
         <Grid item xs={12}>
           <TextField
             style={{ width: '100%' }}
-            placeholder="Memo content"
+            required
             multiline={true}
+            label="Memo content"
             value={description}
             onChange={ev => setDescritption(ev.target.value)}
             rows={1}
