@@ -5,6 +5,7 @@ import Fab from '@material-ui/core/Fab'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import SaveIcon from '@material-ui/icons/Save'
+import AddIcon from '@material-ui/icons/Add'
 import RedoIcon from '@material-ui/icons/Redo'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -18,6 +19,8 @@ import { ConstantContent, ODataCollectionResponse } from '@sensenet/client-core'
 import { GenericContent, User } from '@sensenet/default-content-types'
 import { useRepository } from '../hooks/use-repository'
 import { DialogComponent } from '../components/dialog'
+import { NewMemoI } from '../interfaces'
+import { AddNew } from './addnewmemo'
 
 const useStyles: any = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +42,11 @@ const useStyles: any = makeStyles((theme: Theme) =>
     fab: {
       margin: theme.spacing(1),
     },
+    fabAdd: {
+      position: 'absolute',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
     extendedIcon: {
       marginRight: theme.spacing(1),
     },
@@ -53,6 +61,7 @@ export const MemoPanel: React.FunctionComponent = () => {
   const [editText, setEditText] = useState<string>('')
   const [openmodal, setOpenmodal] = useState<boolean>(false)
   const [modaltitle, setModaltitle] = useState<string>('')
+  const [addpanelshow, setAddpanelshow] = useState<boolean>(false)
   const [currentmemo, setCurrentmemo] = useState<GenericContent>(null as any)
   const [data, setData] = useState<GenericContent[]>([])
 
@@ -71,6 +80,11 @@ export const MemoPanel: React.FunctionComponent = () => {
     }
     loadMemos()
   }, [repo])
+
+  useEffect(() => {
+    console.log('SET')
+    //setData(data)
+  }, [data])
 
   // Remove memo - open modal
   const deleteOpenModal = (memo: GenericContent) => {
@@ -97,6 +111,27 @@ export const MemoPanel: React.FunctionComponent = () => {
     }
   }
 
+  // Create new memo handler
+  const handleAddNew: any = async (memocnt: NewMemoI) => {
+    const created = await repo.post({
+      contentType: 'Memo',
+      parentPath: '/Root/Content/IT/Memos/',
+      oDataOptions: {
+        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'] as any,
+        expand: ['CreatedBy'] as string[],
+      },
+      content: memocnt,
+    })
+    const newList = [...data, created.d]
+    newList.sort((a, b) => {
+      const bDate = new Date(b.ModificationDate ? b.ModificationDate : '').getTime()
+      const aDate = new Date(a.ModificationDate ? a.ModificationDate : '').getTime()
+      return aDate < bDate ? 1 : -1
+    })
+    setData(newList)
+    setAddpanelshow(false)
+  }
+
   // Expansion panel handler
   const handleChangeExpand: any = (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
@@ -115,16 +150,30 @@ export const MemoPanel: React.FunctionComponent = () => {
     const newDescrition = {
       Description: editText,
     }
-    await repo.patch({
+    const editedMemo = await repo.patch({
       idOrPath: memo.Id,
       content: newDescrition,
+      oDataOptions: {
+        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'] as any,
+        expand: ['CreatedBy'] as string[],
+      },
     })
-    data.map(x => {
+
+    const newlist = data.map(x => {
       if (x.Id === memo.Id) {
-        x.Description = editText
+        return editedMemo.d
+      } else {
+        return x
       }
     })
-    setData(data)
+
+    newlist.sort((a, b) => {
+      const bDate = new Date(b.ModificationDate ? b.ModificationDate : '').getTime()
+      const aDate = new Date(a.ModificationDate ? a.ModificationDate : '').getTime()
+      return aDate < bDate ? 1 : -1
+    })
+
+    setData(newlist)
     setEditmode(false)
     console.log('Save successfuly')
   }
@@ -136,6 +185,13 @@ export const MemoPanel: React.FunctionComponent = () => {
 
   return (
     <div className={classes.root}>
+      <AddNew
+        show={addpanelshow}
+        onCreate={memo => {
+          handleAddNew(memo)
+        }}
+        onClose={() => setAddpanelshow(false)}
+      />
       {data.map(memo => (
         <ExpansionPanel
           key={memo.Id}
@@ -156,7 +212,7 @@ export const MemoPanel: React.FunctionComponent = () => {
                   className={editmode === memo.Id.toString() ? classes.hidden : ''}
                 />
                 <TextField
-                  style={{ width: '100%', display: editmode === memo.Id.toString() ? 'block' : 'none' }}
+                  style={{ width: '100%', display: editmode === memo.Id.toString() ? 'inline-flex' : 'none' }}
                   placeholder="Write a memo..."
                   multiline={true}
                   value={editText}
@@ -202,6 +258,15 @@ export const MemoPanel: React.FunctionComponent = () => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}
+      <Fab
+        color="secondary"
+        variant="extended"
+        onClick={() => setAddpanelshow(true)}
+        aria-label="Add new"
+        className={classes.fabAdd}>
+        <AddIcon className={classes.extendedIcon} />
+        Add new
+      </Fab>
       <DialogComponent
         open={openmodal}
         title={modaltitle}

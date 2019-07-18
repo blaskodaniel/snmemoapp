@@ -20,3 +20,14 @@ export interface DialogPropsI {
   title: string
   onClose: (value: boolean) => void
 }
+
+export interface NewMemoI {
+  DisplayName: string
+  Description: string
+}
+
+export interface AddNewI {
+  show: boolean
+  onCreate: (memo: NewMemoI) => void
+  onClose: () => void
+}
