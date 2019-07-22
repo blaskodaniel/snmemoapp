@@ -18,7 +18,7 @@ Be sure that you have installed a GIT client, Node.JS (latest or LTS). You can u
 
 ### Using as a template
 
-1. Clone a GIT repository with `git clone https://github.com/blaskodaniel/snmemoapp`
+1. Clone a GIT repository
 1. cd into the cloned directory
 1. Install the package dependencies with `npm install` or `yarn install`
 
