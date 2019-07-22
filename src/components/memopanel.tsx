@@ -191,8 +191,12 @@ export const MemoPanel: React.FunctionComponent = () => {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
             <Typography className={classes.heading}>{memo.DisplayName}</Typography>
             <Typography className={classes.secondaryHeading}>
-              {memo.CreatedBy ? (memo.CreatedBy as User).FullName : ''} -{' '}
-              {moment(new Date(memo.CreationDate ? memo.CreationDate : '')).format('YYYY-MM-DD HH:mm:ss')}
+              Created by: {memo.CreatedBy ? (memo.CreatedBy as User).FullName : ''}{' '}
+              {moment(new Date(memo.CreationDate ? memo.CreationDate : '')).format('dddd on DD-MM-YYYY')}{' '}
+              <span style={{ fontStyle: 'italic' }}>
+                (Modified:{' '}
+                {moment(new Date(memo.ModificationDate ? memo.ModificationDate : '')).format('DD-MM-YYYY HH:mm:ss')})
+              </span>
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
