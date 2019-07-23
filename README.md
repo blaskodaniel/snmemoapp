@@ -1,4 +1,4 @@
-# sn-react-typescript-memo
+# sn-react-typescript-memoapp
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f3d58505-1366-49cc-b6f2-4b2fcc560966/deploy-status)](https://app.netlify.com/sites/snmemo/deploys)
  
@@ -18,14 +18,14 @@ Be sure that you have installed a GIT client, Node.JS (latest or LTS). You can u
 
 ### Using as a template
 
-1. Clone a GIT repository
+1. Clone GIT repository from [this repository](https://github.com/blaskodaniel/snmemoapp.git)
 1. cd into the cloned directory
 1. Install the package dependencies with `npm install` or `yarn install`
 
 ### Starting the dev server
 
 1. Start the Webpack dev server with `npm run start` or `yarn start`
-1. You can browse the app once the build has been finished at [http://localhost:8081/](http://localhost:8081/)
+1. You can browse the app once the build has been finished at [http://localhost:8080/](http://localhost:8080/)
 
 ### Building the project
 
@@ -58,7 +58,7 @@ You can simply run `npm run build` or `yarn build` to create the bundle. It will
 ### Netlify site
 
 1. Log in to Netlify. If you don't have a Netlify account, sign up for free [here](https://www.netlify.com/)
-1. Create a new site with _New site_ from Git button
+1. Create a new site with _New site from Git_ button
 1. Select GitHub at _Continuous Deployment_ section
 1. Authorize Netlify on GitHub modal window
 1. Select repository for deploy
