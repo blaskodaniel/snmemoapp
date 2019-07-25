@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper'
 import SaveIcon from '@material-ui/icons/Save'
 import ClearIcon from '@material-ui/icons/Clear'
 import TextField from '@material-ui/core/TextField'
-import { IAddNew } from '../interfaces'
+import { AddNewprops } from '../interfaces'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export const AddNew: React.FunctionComponent<IAddNew> = props => {
+export const AddNew: React.FunctionComponent<AddNewprops> = props => {
   const classes = useStyles()
   const [displayname, setDisplayname] = useState('')
   const [description, setDescritption] = useState('')

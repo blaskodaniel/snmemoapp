@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/interface-name-prefix */
-export interface INewMemo {
+export interface NewMemo {
   DisplayName: string
   Description: string
 }
 
-export interface IAddNew {
+export interface AddNewprops {
   show: boolean
-  onCreate: (memo: INewMemo) => void
+  onCreate: (memo: NewMemo) => void
   onClose: () => void
 }

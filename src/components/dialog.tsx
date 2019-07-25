@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/interface-name-prefix */
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -8,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import Button from '@material-ui/core/Button'
 
-export interface IDialogProps {
+export interface DialogProps {
   open: boolean
   title: string
   onClose: (value: boolean) => void
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export const DialogComponent: React.FunctionComponent<IDialogProps> = props => {
+export const DialogComponent: React.FunctionComponent<DialogProps> = props => {
   const classes = useStyles()
 
   return (

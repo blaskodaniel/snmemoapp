@@ -9,13 +9,18 @@ import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
 import RedoIcon from '@material-ui/icons/Redo'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ReactMarkdown from 'react-markdown'
-import { ExpansionPanelDetails, ExpansionPanelSummary, Grid, TextField, Typography } from '@material-ui/core'
-import { ODataCollectionResponse } from '@sensenet/client-core'
+import {
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Grid,
+  TextField,
+  Typography,
+} from '@material-ui/core'
 import { GenericContent, User } from '@sensenet/default-content-types'
 import { useRepository } from '../hooks/use-repository'
-import { INewMemo } from '../interfaces'
+import { NewMemo } from '../interfaces'
 import { DialogComponent } from './dialog'
 import { AddNew } from './add-new-memo'
 
@@ -54,25 +59,25 @@ const useStyles: any = makeStyles((theme: Theme) =>
 )
 
 export const MemoPanel: React.FunctionComponent = () => {
-  const repo: any = useRepository()
-  const classes: any = useStyles()
+  const repo = useRepository()
+  const classes = useStyles()
   const [expanded, setExpanded] = useState<string | false>(false)
-  const [editmode, setEditmode] = useState<string>('')
-  const [editText, setEditText] = useState<string>('')
-  const [openmodal, setOpenmodal] = useState<boolean>(false)
-  const [modaltitle, setModaltitle] = useState<string>('')
-  const [addpanelshow, setAddpanelshow] = useState<boolean>(false)
+  const [editmode, setEditmode] = useState('')
+  const [editText, setEditText] = useState('')
+  const [openmodal, setOpenmodal] = useState(false)
+  const [modaltitle, setModaltitle] = useState('')
+  const [addpanelshow, setAddpanelshow] = useState(false)
   const [currentmemo, setCurrentmemo] = useState<GenericContent>(null as any)
   const [data, setData] = useState<GenericContent[]>([])
 
   useEffect(() => {
     async function loadMemos() {
-      const result: ODataCollectionResponse<GenericContent> = await repo.loadCollection({
+      const result = await repo.loadCollection<GenericContent>({
         path: `/Root/Content/IT/Memos`,
         oDataOptions: {
-          select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'] as any,
+          select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'],
           orderby: [['ModificationDate', 'desc']],
-          expand: ['CreatedBy'] as string[],
+          expand: ['CreatedBy'],
         },
       })
       setData(result.d.results)
@@ -106,13 +111,13 @@ export const MemoPanel: React.FunctionComponent = () => {
   }
 
   // Create new memo handler
-  const handleAddNew = async (memocnt: INewMemo) => {
-    const created = await repo.post({
+  const handleAddNew = async (memocnt: NewMemo) => {
+    const created = await repo.post<GenericContent>({
       contentType: 'Memo',
       parentPath: '/Root/Content/IT/Memos/',
       oDataOptions: {
-        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'] as any,
-        expand: ['CreatedBy'] as string[],
+        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'],
+        expand: ['CreatedBy'],
       },
       content: memocnt,
     })
@@ -142,12 +147,12 @@ export const MemoPanel: React.FunctionComponent = () => {
     const newDescrition = {
       Description: editText,
     }
-    const editedMemo = await repo.patch({
+    const editedMemo = await repo.patch<GenericContent>({
       idOrPath: memo.Id,
       content: newDescrition,
       oDataOptions: {
-        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'] as any,
-        expand: ['CreatedBy'] as string[],
+        select: ['DisplayName', 'Description', 'CreationDate', 'CreatedBy', 'ModificationDate'],
+        expand: ['CreatedBy'],
       },
     })
 
@@ -178,7 +183,7 @@ export const MemoPanel: React.FunctionComponent = () => {
     <div className={classes.root}>
       <AddNew
         show={addpanelshow}
-        onCreate={memo => {
+        onCreate={(memo: any) => {
           handleAddNew(memo)
         }}
         onClose={() => setAddpanelshow(false)}
