@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper'
 import SaveIcon from '@material-ui/icons/Save'
 import ClearIcon from '@material-ui/icons/Clear'
 import TextField from '@material-ui/core/TextField'
-import { AddNewI } from '../interfaces'
+import { IAddNew } from '../interfaces'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,13 +24,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export const AddNew: React.FunctionComponent<AddNewI> = props => {
+export const AddNew: React.FunctionComponent<IAddNew> = props => {
   const classes = useStyles()
-  const [displayname, setDisplayname] = useState<string>('')
-  const [description, setDescritption] = useState<string>('')
+  const [displayname, setDisplayname] = useState('')
+  const [description, setDescritption] = useState('')
 
   const create = () => {
-    if (displayname !== '' && description !== '') {
+    if (displayname && description) {
       props.onCreate({ DisplayName: displayname, Description: description })
       setDisplayname('')
       setDescritption('')
@@ -75,7 +75,7 @@ export const AddNew: React.FunctionComponent<AddNewI> = props => {
           <Fab
             aria-label="Create"
             size={'small'}
-            style={{ display: displayname !== '' && description !== '' ? 'inline-flex' : 'none' }}
+            style={{ display: displayname && description ? 'inline-flex' : 'none' }}
             onClick={create}
             className={classes.fab}>
             <SaveIcon />
