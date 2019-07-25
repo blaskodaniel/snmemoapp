@@ -6,7 +6,12 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import Button from '@material-ui/core/Button'
-import { DialogPropsI } from '../interfaces'
+
+export interface DialogProps {
+  open: boolean
+  title: string
+  onClose: (value: boolean) => void
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export const DialogComponent: React.FunctionComponent<DialogPropsI> = props => {
+export const DialogComponent: React.FunctionComponent<DialogProps> = props => {
   const classes = useStyles()
 
   return (
