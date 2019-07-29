@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 import React, { useEffect, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import moment from 'moment'
