@@ -1,7 +1,6 @@
 import React from 'react'
-import { mount } from 'enzyme'
-import { TextField } from '@material-ui/core'
-import { act } from 'react-dom/test-utils'
+import { shallow } from 'enzyme'
+import { Fab, TextField } from '@material-ui/core'
 import { AddNew } from '../src/components/add-new-memo'
 
 describe('Add new memo panel', () => {
@@ -10,53 +9,26 @@ describe('Add new memo panel', () => {
     onCreate: jest.fn(),
     onClose: jest.fn(),
   }
-  it('Snapshot', () => {
-    const wrapper = mount(<AddNew {...addnewprops} />)
-    expect(wrapper).toMatchSnapshot()
-  })
 
-  it('Create memo', () => {
-    const wrapper = mount(<AddNew {...addnewprops} />)
-    const textfieldTitle = wrapper.find(TextField).at(0)
-    const textfieldDesc = wrapper.find(TextField).at(1)
+  it('clears inputs after submit', () => {
+    const wrapper = shallow(<AddNew {...addnewprops} />)
+    const getTextFieldAt = (at: number) => wrapper.find(TextField).at(at)
+    const title = 'New memo title'
+    const description = 'New memo description'
+    ;(getTextFieldAt(0).prop('onChange') as any)({ target: { value: title } })
+    ;(getTextFieldAt(1).prop('onChange') as any)({ target: { value: description } })
 
-    act(() => {
-      ;(textfieldTitle.prop('onChange') as any)({ target: { value: 'New memo title' } })
-    })
+    expect(getTextFieldAt(0).prop('value')).toEqual(title)
+    expect(getTextFieldAt(1).prop('value')).toEqual(description)
 
-    act(() => {
-      ;(textfieldDesc.prop('onChange') as any)({ target: { value: 'New memo description' } })
-    })
+    wrapper
+      .find(Fab)
+      .first()
+      .simulate('click')
 
-    expect(
-      textfieldTitle
-        .find('textarea')
-        .at(0)
-        .text(),
-    ).toEqual('New memo title')
-    expect(
-      textfieldDesc
-        .find('textarea')
-        .at(0)
-        .text(),
-    ).toEqual('New memo description')
+    expect(addnewprops.onCreate).toBeCalledWith({ DisplayName: title, Description: description })
 
-    const createbtn = wrapper.update().find('button[aria-label="Create"]')
-    act(() => {
-      createbtn.simulate('click')
-    })
-
-    expect(
-      textfieldTitle
-        .find('textarea')
-        .at(0)
-        .text(),
-    ).toEqual('')
-    expect(
-      textfieldDesc
-        .find('textarea')
-        .at(0)
-        .text(),
-    ).toEqual('')
+    expect(getTextFieldAt(0).prop('value')).toEqual('')
+    expect(getTextFieldAt(1).prop('value')).toEqual('')
   })
 })
