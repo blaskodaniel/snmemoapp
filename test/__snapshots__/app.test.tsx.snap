@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Layout App component snapshot 1`] = `
+exports[`The app layout instance should renders correctly 1`] = `
 <Fragment>
   <CssBaseline />
   <Component />

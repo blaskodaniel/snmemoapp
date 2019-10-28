@@ -1,13 +1,13 @@
-import { mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { RepositoryProvider } from '../src/context/repository-provider'
 
-describe('Repository Provider', () => {
-  it('Repository Provider snapshot', async () => {
+describe('The repository provider instance', () => {
+  it('should renders correctly', async () => {
     let wrapper: any
     await act(async () => {
-      wrapper = mount(<RepositoryProvider />)
+      wrapper = shallow(<RepositoryProvider />)
     })
 
     expect(wrapper).toMatchSnapshot()

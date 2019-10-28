@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Memo-panel Snapshot 1`] = `
+exports[`The main memo panel instance should renders correctly 1`] = `
 <Component>
   <div
     className="makeStyles-root-1"

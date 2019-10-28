@@ -4,18 +4,17 @@ import TextField from '@material-ui/core/TextField'
 import { act } from 'react-dom/test-utils'
 import { LoginForm } from '../src/components/login-form'
 
-describe('LoginForm', () => {
+describe('The login instance', () => {
   const testprop = {
     onLogin: jest.fn(),
     error: 'test',
   }
 
-  it('LoginForm snapshot', () => {
-    const wrapper = shallow(<LoginForm {...testprop} />)
-    expect(wrapper).toMatchSnapshot()
+  it('should renders correctly', () => {
+    expect(shallow(<LoginForm {...testprop} />)).toMatchSnapshot()
   })
 
-  it('Username change test', async () => {
+  it('should change username state when user change it', async () => {
     const wrapper = mount(<LoginForm {...testprop} />)
     act(() => {
       ;(wrapper
@@ -32,7 +31,7 @@ describe('LoginForm', () => {
     ).toEqual('testusername')
   })
 
-  it('Repository change test', async () => {
+  it('should change repository url state when user change it', async () => {
     const wrapper = mount(<LoginForm {...testprop} />)
     act(() => {
       ;(wrapper

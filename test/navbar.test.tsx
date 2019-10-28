@@ -4,13 +4,12 @@ import Button from '@material-ui/core/Button'
 import { NavBarComponent } from '../src/components/navbar'
 import { RepositoryContext } from '../src/context/repository-provider'
 
-describe('Navbar', () => {
-  it('Navbar snapshot', () => {
-    const wrapper = shallow(<NavBarComponent />)
-    expect(wrapper).toMatchSnapshot()
+describe('The navbar instance', () => {
+  it('should renders correctly', () => {
+    expect(shallow(<NavBarComponent />)).toMatchSnapshot()
   })
 
-  it('Logout test', () => {
+  it('should logout correctly', () => {
     const logoutfn = jest.fn()
     const wrapper = mount(
       <RepositoryContext.Provider value={{ authentication: { logout: logoutfn } } as any}>

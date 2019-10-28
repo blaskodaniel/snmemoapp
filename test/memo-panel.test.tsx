@@ -10,16 +10,21 @@ import { MemoPanel } from '../src/components/memo-panel'
 import { AddNew } from '../src/components/add-new-memo'
 import { TestMemoCollection, TestNewMemo } from './mocks/test-objects'
 
-describe('Memo-panel', () => {
-  it('Snapshot', async () => {
-    let wrapper: any
+describe('The main memo panel instance', () => {
+  let wrapper: any
+  let repo: any
+
+  beforeEach(() => {
     window.fetch = function fetchMethod() {
       return Promise.resolve({ d: TestMemoCollection } as any)
     }
-    const repo = new Repository()
+    repo = new Repository()
     repo.loadCollection = function fetchMethod() {
       return Promise.resolve({ d: { results: TestMemoCollection } } as any)
     }
+  })
+
+  it('should renders correctly', async () => {
     await act(async () => {
       wrapper = mount(
         <RepositoryContext.Provider value={repo}>
@@ -30,16 +35,7 @@ describe('Memo-panel', () => {
     expect(wrapper.update()).toMatchSnapshot()
   })
 
-  it('Memo list', async () => {
-    let wrapper: any
-    window.fetch = function fetchMethod() {
-      return Promise.resolve({ d: TestMemoCollection } as any)
-    }
-    const repo = new Repository()
-    repo.loadCollection = function fetchMethod() {
-      return Promise.resolve({ d: { results: TestMemoCollection } } as any)
-    }
-
+  it('should render memo list when initialized', async () => {
     await act(async () => {
       wrapper = mount(
         <RepositoryContext.Provider value={repo}>
@@ -55,12 +51,7 @@ describe('Memo-panel', () => {
     expect(memoListElement.text()).toContain(TestMemoCollection[0].DisplayName)
   })
 
-  it('Add new memo', async () => {
-    let wrapper: any
-    window.fetch = function fetchMethod() {
-      return Promise.resolve({ d: TestMemoCollection } as any)
-    }
-    const repo = new Repository()
+  it('should add new memo to list', async () => {
     repo.loadCollection = function fetchMethod() {
       return Promise.resolve({ d: { results: TestMemoCollection } } as any)
     }
@@ -91,15 +82,7 @@ describe('Memo-panel', () => {
     expect(memoListElement.text()).toContain(TestNewMemo.DisplayName)
   })
 
-  it('Remove memo', async () => {
-    let wrapper: any
-    window.fetch = function fetchMethod() {
-      return Promise.resolve({ d: TestMemoCollection } as any)
-    }
-    const repo = new Repository()
-    repo.loadCollection = function fetchMethod() {
-      return Promise.resolve({ d: { results: TestMemoCollection } } as any)
-    }
+  it('should remove memo from list', async () => {
     repo.post = function post() {
       return Promise.resolve({ d: TestNewMemo, ok: true } as any)
     }
@@ -131,15 +114,7 @@ describe('Memo-panel', () => {
     expect(wrapper.update().find('div.MuiPaper-root')).toHaveLength(3)
   })
 
-  it('Edit memo', async () => {
-    let wrapper: any
-    window.fetch = function fetchMethod() {
-      return Promise.resolve({ d: TestMemoCollection } as any)
-    }
-    const repo = new Repository()
-    repo.loadCollection = function fetchMethod() {
-      return Promise.resolve({ d: { results: TestMemoCollection } } as any)
-    }
+  it('should edit memo', async () => {
     repo.patch = function patch() {
       return Promise.resolve({ d: { ...TestNewMemo, Description: 'Modified memo' }, ok: true } as any)
     }

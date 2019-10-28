@@ -1,21 +1,21 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import { TextField } from '@material-ui/core'
 import { act } from 'react-dom/test-utils'
 import { AddNew } from '../src/components/add-new-memo'
 
-describe('Add new memo panel', () => {
+describe('The new memo panel instance', () => {
   const addnewprops = {
     show: true,
     onCreate: jest.fn(),
     onClose: jest.fn(),
   }
-  it('Snapshot', () => {
-    const wrapper = mount(<AddNew {...addnewprops} />)
+  it('should renders correctly', () => {
+    const wrapper = shallow(<AddNew {...addnewprops} />)
     expect(wrapper).toMatchSnapshot()
   })
 
-  it('Create memo', () => {
+  it('should create a memo', () => {
     const wrapper = mount(<AddNew {...addnewprops} />)
     const textfieldTitle = wrapper.find(TextField).at(0)
     const textfieldDesc = wrapper.find(TextField).at(1)
@@ -41,9 +41,11 @@ describe('Add new memo panel', () => {
         .text(),
     ).toEqual('New memo description')
 
-    const createbtn = wrapper.update().find('button[aria-label="Create"]')
     act(() => {
-      createbtn.simulate('click')
+      wrapper
+        .update()
+        .find('button[aria-label="Create"]')
+        .simulate('click')
     })
 
     expect(
