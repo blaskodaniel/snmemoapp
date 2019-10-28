@@ -1,7 +1,6 @@
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
-import { act } from 'react-dom/test-utils'
 import { LoginForm } from '../src/components/login-form'
 
 describe('The login instance', () => {
@@ -15,13 +14,11 @@ describe('The login instance', () => {
   })
 
   it('should change username state when user change it', async () => {
-    const wrapper = mount(<LoginForm {...testprop} />)
-    act(() => {
-      ;(wrapper
-        .find(TextField)
-        .first()
-        .prop('onChange') as any)({ target: { value: 'testusername' } } as any)
-    })
+    const wrapper = shallow(<LoginForm {...testprop} />)
+    ;(wrapper
+      .find(TextField)
+      .first()
+      .prop('onChange') as any)({ target: { value: 'testusername' } } as any)
     expect(
       wrapper
         .update()
@@ -32,13 +29,11 @@ describe('The login instance', () => {
   })
 
   it('should change repository url state when user change it', async () => {
-    const wrapper = mount(<LoginForm {...testprop} />)
-    act(() => {
-      ;(wrapper
-        .find(TextField)
-        .at(2)
-        .prop('onChange') as any)({ target: { value: 'https://dev.demo.sensenet.com' } } as any)
-    })
+    const wrapper = shallow(<LoginForm {...testprop} />)
+    ;(wrapper
+      .find(TextField)
+      .at(2)
+      .prop('onChange') as any)({ target: { value: 'https://dev.demo.sensenet.com' } } as any)
     expect(
       wrapper
         .update()
