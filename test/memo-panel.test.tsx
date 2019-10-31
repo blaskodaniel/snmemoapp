@@ -4,8 +4,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import { Repository } from '@sensenet/client-core'
 import { act } from 'react-dom/test-utils'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import { TextField } from '@material-ui/core'
-import { RepositoryContext } from '../src/context/repository-provider'
+import { Fab, TextField } from '@material-ui/core'
+import { RepositoryContext } from '@sensenet/hooks-react'
 import { MemoPanel } from '../src/components/memo-panel'
 import { AddNew } from '../src/components/add-new-memo'
 import { TestMemoCollection, TestNewMemo } from './mocks/test-objects'
@@ -96,15 +96,18 @@ describe('The main memo panel instance', () => {
       )
     })
 
-    const trashbtn = wrapper
+    act(() => {
+      ;(wrapper
+        .update()
+        .find(Fab)
+        .at(3)
+        .prop('onClick') as any)(TestMemoCollection[0])
+    })
+
+    const yesbtn = wrapper
       .update()
-      .find('button')
-      .at(3)
-
-    trashbtn.simulate('click')
-    expect(wrapper.find('div#simple-dialog-title h6').text()).toEqual('Are you sure you want to delete it?')
-
-    const yesbtn = wrapper.find('div.MuiDialogActions-root button').at(0)
+      .find('div.MuiDialogActions-root button')
+      .at(0)
 
     expect(wrapper.find('div.MuiPaper-root')).toHaveLength(4)
     await act(async () => {

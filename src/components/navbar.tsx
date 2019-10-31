@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppBar, Button, Toolbar, Tooltip, Typography } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { useRepository } from '../hooks/use-repository'
+import { useRepository } from '@sensenet/hooks-react'
 
 const useStyles = makeStyles(() =>
   createStyles({
