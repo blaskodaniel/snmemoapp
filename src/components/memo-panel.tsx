@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { GenericContent, User } from '@sensenet/default-content-types'
-import { useRepository } from '../hooks/use-repository'
+import { useRepository } from '@sensenet/hooks-react'
 import { NewMemo } from '../interfaces'
 import { DialogComponent } from './dialog'
 import { AddNew } from './add-new-memo'

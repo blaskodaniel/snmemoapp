@@ -1,8 +1,8 @@
 import { mount, shallow } from 'enzyme'
 import React from 'react'
 import Button from '@material-ui/core/Button'
+import { RepositoryContext } from '@sensenet/hooks-react'
 import { NavBarComponent } from '../src/components/navbar'
-import { RepositoryContext } from '../src/context/repository-provider'
 
 describe('The navbar instance', () => {
   it('should renders correctly', () => {
